@@ -14,6 +14,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 public class Label {
 	@Id
@@ -22,14 +24,15 @@ public class Label {
 	private LocalDateTime createtime;
 	private LocalDateTime modifiedtime;
 	private String labelname;
+	
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private UserInformation userinfo;
 
 	@ManyToMany
-	@JoinTable(name = "Label_Notes_join", joinColumns = @JoinColumn(name = "labelid"), inverseJoinColumns = @JoinColumn(name = "noteId"))
-	
-	private List<Notes> notelist = new ArrayList<Notes>();
+	@JoinTable(name = "labelnote", joinColumns = @JoinColumn(name = "labelid"), inverseJoinColumns = @JoinColumn(name = "noteId"))
+	@JsonIgnoreProperties(value="labellist")
+	private List<Notes> notelist = new ArrayList<Notes>() ;
 
 	public Label() {
 		super();
@@ -59,8 +62,8 @@ public class Label {
 		return createtime;
 	}
 
-	public void setCreatetime(LocalDateTime createtime) {
-		this.createtime = createtime;
+	public void setCreatetime() {
+		this.createtime = LocalDateTime.now();
 	}
 
 	public LocalDateTime getModifiedtime() {

@@ -45,8 +45,8 @@ public class LabelService {
 		
 			 
 			 label.setUserinfo(user.get());
-			 label.setCreatetime(LocalDateTime.now());
-			 label.setModifiedtime(LocalDateTime.now());
+			 label.setCreatetime();
+			 //label.setModifiedtime(LocalDateTime.now());
 			 labelrepository.save(label);
 			 
 			 return "label created";
@@ -80,14 +80,18 @@ public class LabelService {
 	public String updateLabel(Label label, String decodeToken) {
 		
 			Optional<UserInformation> userId = repository.findByEmail(decodeToken);
-			System.out.println("label id is"+label.getLabelid());
+			//System.out.println("label id is"+label.getLabelid());
 			Optional<Label> label_id = labelrepository.findById(label.getLabelid());					
 			if (userId.isPresent()) 
 			{
 				if (label_id.isPresent())
 				{
+					System.out.println("hiiiiiii");
+					label_id.get().setLabelname(label.getLabelname());
+					//label.getModifiedtime();
+					label_id.get().setModifiedtime(LocalDateTime.now());
 					
-					label_id.get().setLabelname(label.getLabelname());;
+					//System.out.println(label.getModifiedtime());
 					labelrepository.save(label_id.get());
 				}
 			}

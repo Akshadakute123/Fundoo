@@ -22,14 +22,11 @@ public class Collaborator
 	
 	private String newemail;
 //	@ManyToOne
+	//@ManyToMany(mappedBy = "collaboration")
 	@ManyToMany
-	//@JoinColumn(name = "noteId")
-
-	//@JoinColumn(name="newemail")
-	  @JoinTable ( name = "colabjoin", joinColumns = @JoinColumn (name
-	  ="newemail"), inverseJoinColumns = @JoinColumn(name = "noteId"))
+	  @JoinTable ( name = "coljoin", joinColumns = @JoinColumn (name
+	  ="colabid"), inverseJoinColumns = @JoinColumn(name = "noteId"))
 	@JsonIgnoreProperties(value="collaboration")
-
 	private List<Notes>noteslist=new ArrayList<Notes>();
      // private Notes noteId;
 	public String getNewemail() {
@@ -44,9 +41,16 @@ public class Collaborator
 	public void setNoteslist(List<Notes> noteslist) {
 		this.noteslist = noteslist;
 	}
+	public int getColabid() {
+		return colabid;
+	}
 	@Override
 	public String toString() {
-		return "Collaborator [newemail=" + newemail + ", noteslist=" + noteslist + "]";
+		return "Collaborator [colabid=" + colabid + ", newemail=" + newemail + ", noteslist=" + noteslist + "]";
 	}
+	public void setColabid(int colabid) {
+		this.colabid = colabid;
+	}
+	
 	
 }

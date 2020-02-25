@@ -52,103 +52,101 @@ public class NoteController {
 		return noteservice.updateNotes(notes, decode);
 
 	}
+
 	@PostMapping("/pin")
-	public String ispin(@RequestHeader int noteId,@RequestHeader String token)
-	{
-		String tokens=tokenservice.getUserIdFromToken(token);
-		return noteservice.pin(noteId,tokens);
+	public String ispin(@RequestHeader int noteId, @RequestHeader String token) {
+		String tokens = tokenservice.getUserIdFromToken(token);
+		return noteservice.pin(noteId, tokens);
 	}
 
-   @PostMapping("/untrash")
-   public String untrash(@RequestHeader int noteId,@RequestHeader String token)
-   {
-	   String tokens=tokenservice.getUserIdFromToken(token);
-		return noteservice.untrash(noteId,tokens);
-   }
-   @PostMapping("/trash")
-   public String trash(@RequestHeader int noteId,@RequestHeader String token)
-   {
-	   String tokens=tokenservice.getUserIdFromToken(token);
-		return noteservice.trash(noteId,tokens);
-   }
-   @PostMapping("/archieve")
-   public String archieve(@RequestHeader int noteId,@RequestHeader String token)
-   {
-	   String tokens=tokenservice.getUserIdFromToken(token);
-		return noteservice.archieve(noteId,tokens);
-   }
-   @PostMapping("/unarchieve")
-   public String unarchieve(@RequestHeader int noteId,@RequestHeader String token)
-   {
-	   String tokens=tokenservice.getUserIdFromToken(token);
-		return noteservice.unarchieve(noteId,tokens);
-   }
-  @DeleteMapping("/deletetrash")
-  public String delete(@RequestHeader int noteId,@RequestHeader String token)
-  {
-	 
-		   String tokens=tokenservice.getUserIdFromToken(token);
-			return noteservice.trashdelete(noteId,tokens);
-	   
-  }
-  @GetMapping("/getnote")
-  public List<Notes> findnotes(@RequestHeader String token)
-  {
-	  String tokens=tokenservice.getUserIdFromToken(token);
-	  return noteservice.findAll(tokens);
-  }
-  @GetMapping("/sortlist")
-  public List<Notes> sortelist(@RequestHeader String token)
-  {
+	@PostMapping("/untrash")
+	public String untrash(@RequestHeader int noteId, @RequestHeader String token) {
+		String tokens = tokenservice.getUserIdFromToken(token);
+		return noteservice.untrash(noteId, tokens);
+	}
 
-	   String tokens=tokenservice.getUserIdFromToken(token);
-		return noteservice.sortedlist(tokens);  
-  }
-	 
-  @GetMapping("/trashlist")
-  public List<Notes> trashfile(@RequestHeader String token)
-  {
-	  String tokens=tokenservice.getUserIdFromToken(token);
-	  return noteservice.getnoteslist(tokens);
-  }
-  
-  @PostMapping("/search")
-  public List<Notes> search(@RequestHeader String tittle, @RequestHeader String token)
-  {
-	  String tokens=tokenservice.getUserIdFromToken(token);
-	  return noteservice.searchBytitileDesc(tittle,tokens);
-	  
-  }
-  @PostMapping("/collaborate")
-  public String colaborate(@RequestHeader String token,@RequestHeader String emailid,@RequestHeader int noteId )
-  {
-	  String tokens=tokenservice.getUserIdFromToken(token);
-	  return noteservice.collaborate(tokens,emailid,noteId);
-  }
-  @GetMapping("/collaboratelist")
-  public List<Collaborator> collablist(@RequestHeader String token)
-  {
+	@PostMapping("/trash")
+	public String trash(@RequestHeader int noteId, @RequestHeader String token) {
+		String tokens = tokenservice.getUserIdFromToken(token);
+		return noteservice.trash(noteId, tokens);
+	}
 
-	  String tokens=tokenservice.getUserIdFromToken(token);
-	  return noteservice.findAllcollab(tokens);
-	 
-  }
-  
-  
-  
-  
-  
-  
-  @PostMapping("/reminder")
-  public String addreminder(@RequestHeader String token,@RequestHeader String reminder,@RequestHeader int noteId )
-  {
-	  String tokens=tokenservice.getUserIdFromToken(token);
-	  return noteservice.addreminder(tokens,reminder,noteId);
-  }
-  @PutMapping("/removereminder")
-  public String remove(@RequestHeader String token,@RequestHeader int noteId)
-  {
-	  String tokens=tokenservice.getUserIdFromToken(token);
-	  return noteservice.removereminder(tokens,noteId);
-  }
+	@PostMapping("/archieve")
+	public String archieve(@RequestHeader int noteId, @RequestHeader String token) {
+		String tokens = tokenservice.getUserIdFromToken(token);
+		return noteservice.archieve(noteId, tokens);
+	}
+
+	@PostMapping("/unarchieve")
+	public String unarchieve(@RequestHeader int noteId, @RequestHeader String token) {
+		String tokens = tokenservice.getUserIdFromToken(token);
+		return noteservice.unarchieve(noteId, tokens);
+	}
+
+	@DeleteMapping("/deletetrash")
+	public String delete(@RequestHeader int noteId, @RequestHeader String token) {
+
+		String tokens = tokenservice.getUserIdFromToken(token);
+		return noteservice.trashdelete(noteId, tokens);
+
+	}
+
+	@GetMapping("/getnote")
+	public List<Notes> findnotes(@RequestHeader String token) {
+		String tokens = tokenservice.getUserIdFromToken(token);
+		return noteservice.findAll(tokens);
+	}
+
+	@GetMapping("/sortlist")
+	public List<Notes> sortelist(@RequestHeader String token) {
+
+		String tokens = tokenservice.getUserIdFromToken(token);
+		return noteservice.sortedlist(tokens);
+	}
+
+	@GetMapping("/trashlist")
+	public List<Notes> trashfile(@RequestHeader String token) {
+		String tokens = tokenservice.getUserIdFromToken(token);
+		return noteservice.getnoteslist(tokens);
+	}
+
+	@PostMapping("/search")
+	public List<Notes> search(@RequestHeader String tittle, @RequestHeader String token) {
+		String tokens = tokenservice.getUserIdFromToken(token);
+		return noteservice.searchBytitileDesc(tittle, tokens);
+
+	}
+
+	@PostMapping("/collaborate")
+	public String colaborate(@RequestHeader String token, @RequestHeader String emailid, @RequestHeader int noteId) {
+		String tokens = tokenservice.getUserIdFromToken(token);
+		return noteservice.collaborate(tokens, emailid, noteId);
+	}
+	@PostMapping("/removecollab")
+	public String removecollaborate(@RequestHeader String token, @RequestHeader String email ,@RequestHeader int noteId) {
+		String decodeToken = tokenservice.getUserIdFromToken(token);
+		return noteservice.removeCollaborate(decodeToken,email,noteId);
+	}
+
+	@GetMapping("/collaboratelist")
+	public List<Collaborator> collablist(@RequestHeader String token) {
+
+		String tokens = tokenservice.getUserIdFromToken(token);
+		return noteservice.findAllcollab(tokens);
+
+	}
+
+	@PostMapping("/reminder")
+	public String addreminders(@RequestHeader String token, @RequestHeader String times, @RequestHeader int noteId) {
+		System.out.println("helloolloo");
+		String tokens = tokenservice.getUserIdFromToken(token);
+		return noteservice.addreminder(tokens, times, noteId);
+	}
+
+	@PutMapping("/removereminder")
+	public String remove(@RequestHeader String token,@RequestHeader int noteId) {
+		String tokens = tokenservice.getUserIdFromToken(token);
+		return noteservice.removereminder(tokens,noteId);
+	}
+	
 }

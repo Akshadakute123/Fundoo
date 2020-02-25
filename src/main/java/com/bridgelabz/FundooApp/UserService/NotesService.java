@@ -1,7 +1,10 @@
 package com.bridgelabz.FundooApp.UserService;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Formatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collector;
@@ -47,6 +50,7 @@ public class NotesService {
 			// notes.setUserinfo(user.get());
 			System.out.println(user.get());
 			notes.setUserid(user.get());
+			notes.setAtcreate();
 			noterepository.save(notes);
 			// return "creation failed";
 		}
@@ -115,6 +119,7 @@ public class NotesService {
 			if (note.isPresent()) {
 				note.get().setTittle(notes.getTittle());
 				note.get().setDescription(notes.getDescription());
+				note.get().setAtModified();
 				noterepository.save(note.get());
 			}
 			//notes.get().getuser();
@@ -292,7 +297,7 @@ public class NotesService {
 		
 //		Optional<Notes>notes1 = noterepository.findByUserid(user1.get());
 	List<Notes>listnotes=noteslist.stream().filter(i ->i.getUserid().getemail().equals(token)).collect(Collectors.toList());
-	List<Notes>notesearch=listnotes.stream()                                                       .filter(i->i.getTittle().equals(title)).collect(Collectors.toList());
+	List<Notes>notesearch=listnotes.stream().filter(i->i.getTittle().equals(title)).collect(Collectors.toList());
 			
 		return notesearch;
 	}
@@ -312,7 +317,7 @@ public class NotesService {
 		}
 		else if(!notes.isPresent())
 		{
-			return "notes not present";
+			return "notes not present";  
 		}
 		if (!newid.isPresent()) {
 			colaborate.setNewemail(emailid);
@@ -333,6 +338,13 @@ public class NotesService {
 			System.out.println("hhewiieijejhj");
 			if(newid.isPresent())
 			{
+				for (int i = 0; i < newid.get().getNoteslist().size(); i++) {
+					if(newid.get().getNoteslist().get(i).getNoteId()==noteId)
+					{
+						return "already collbrated";
+					}
+					
+				}
 				System.out.println("hhdshjashjdhxgg");
 				//System.out.println(newid);
 				newid.get().getNoteslist().add(notes.get());
@@ -348,15 +360,23 @@ public class NotesService {
 		
 		return "collaborate";
 	}
+	
 
-	public String addreminder(String tokens, String time, int noteId)
+	public String addreminder(String tokens, String remindertime, int noteId)
 	{
-		
+		System.out.println("hiiiiiiiiiiiiiiiiiiii");
+		System.out.println(remindertime);
 		Optional<UserInformation>decodetoken=userrepository.findByEmail(tokens);
 		Optional<Notes>noteid=noterepository.findById(noteId);
+	    
+	    DateTimeFormatter datetimeformater=DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	    LocalDateTime reminderTime=LocalDateTime.parse(remindertime,datetimeformater);
 		if(decodetoken.isPresent())
 		{
-			noteid.get().setReminder(time);
+			System.out.println("in ifff");
+			noteid.get().setRemindercheck(true);
+		    noteid.get().setRemindertime(reminderTime);
+		    System.out.println("tttttttttttttttttttttttttttttttttttttttttt");
 			noterepository.save(noteid.get());
 			return "reminder added succesfully";
 		}
@@ -369,22 +389,33 @@ public class NotesService {
 		
 	}
 
-	public String removereminder(String tokens, int noteId) {
-		
-		Optional<UserInformation>user=userrepository.findByEmail(tokens);
-		Optional<Notes>noteid=noterepository.findById(noteId);
-		if(user.isPresent())
-		{
-			noteid.get().setReminder(null);
-			noterepository.save(noteid.get());
-			return "reminder deleted succesfully";
-		}
-		else
-		{
-			return "user not exist";
+	public String removereminder(String tokens,  int noteId) {
+	System.out.println("hiiiiiiiiiiiiiiiiiiii");
+			//System.out.println(remindertime);
+			Optional<UserInformation>decodetoken=userrepository.findByEmail(tokens);
+			Optional<Notes>noteid=noterepository.findById(noteId);
+		    
+		   // DateTimeFormatter datetimeformater=DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		//    LocalDateTime reminderTime=LocalDateTime.parse(remindertime,datetimeformater);
+			if(decodetoken.isPresent())
+			{
+				System.out.println("in ifff");
+				noteid.get().setRemindercheck(false);
+			    noteid.get().setRemindertime(null);
+			    System.out.println("tttttttttttttttttttttttttttttttttttttttttt");
+				noterepository.save(noteid.get());
+				return "reminder deleted succesfully";
+			}
+			else
+			{
+				return "user not exist";
 
+			}
+		
+			
 		}
-	}
+
+	
 
 	public List<Collaborator> getcollablist() {
 		List<Collaborator>listcollab=collaboratorrepo.findAll();
@@ -401,6 +432,23 @@ public class NotesService {
 		if (user.isPresent())
 			colablist = collaboratorrepo.findAll();
 		return colablist;
+	}
+
+	public String removeCollaborate(String decodeToken, String email, int noteId) {
+		Optional<UserInformation> user = userrepository.findByEmail(decodeToken);
+		Optional<Notes> notes = noterepository.findByNoteId(noteId);
+		Optional<Collaborator>collab = collaboratorrepo.findByNewemail(email);
+		if((collab.isPresent())&&(notes.isPresent()))
+		{
+			collab.get().getNoteslist().remove(collab.get());
+		//	System.out.println(collab.get().getNewemail());
+			
+		collaboratorrepo.delete(collab.get());
+			
+		//	collaboratorrepo.save(collab.get());
+		}
+		
+		return "collaborator removed";
 	}
 
 }

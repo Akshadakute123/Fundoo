@@ -8,19 +8,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 
-public class UserInformation {
+public class UserInformation{
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	// @OneToMany(mappedBy = )
 	private int user_id;
 	private String username;
@@ -31,10 +25,10 @@ public class UserInformation {
 	@JoinColumn(name = "user_id")
 	private List<Notes> notelist = new ArrayList<Notes>();
 
-	@ManyToMany
-	@JsonIgnoreProperties(value = "userlist")
-	@JoinTable(name = "usercollab", joinColumns = @JoinColumn(name = " user_id"), inverseJoinColumns = @JoinColumn(name = "noteId"))
-	private List<Notes>notelistss  = new ArrayList<Notes>();
+//	@ManyToMany
+//	@JsonIgnoreProperties(value = "userlist")
+//	@JoinTable(name = "usercollab", joinColumns = @JoinColumn(name = " user_id"), inverseJoinColumns = @JoinColumn(name = "noteId"))
+//	private List<Notes>notelistss  = new ArrayList<Notes>();
 
 	public int getUser_id() {
 		return user_id;
@@ -84,13 +78,13 @@ public class UserInformation {
 		this.notelist = notelist;
 	}
 
-	public List<Notes> getNotelistss() {
-		return notelistss;
-	}
-
-	public void setNotelistss(List<Notes> notelistss) {
-		this.notelistss = notelistss;
-	}
+//	public List<Notes> getNotelistss() {
+//		return notelistss;
+//	}
+//
+//	public void setNotelistss(List<Notes> notelistss) {
+//		this.notelistss = notelistss;
+//	}
 
 	@Override
 	public String toString() {

@@ -1,5 +1,6 @@
 package com.bridgelabz.FundooApp.UserModell;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-public class Notes 
+public class Notes                                                                                                                                                                                                                                       
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,29 +31,35 @@ public class Notes
 	private boolean ispin;
 	@NotNull
 	private boolean isarchieve;
-	private String reminder;
+//	private String reminder;
+	private boolean remindercheck;
+	private LocalDateTime remindertime;
+	private LocalDateTime atcreate;
+	private LocalDateTime atModified;
+	
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private UserInformation userid;
 	@ManyToMany
 	//@JoinColumn(name="newemail")
 	
-	@JoinTable ( name = "colabjoin", joinColumns = @JoinColumn (name
-			  ="noteId"), inverseJoinColumns = @JoinColumn(name = "newemail"))
-	@JsonIgnoreProperties(value="noteslist")   
-	private List<Collaborator>collaboration=new ArrayList<Collaborator>();
-	@ManyToMany
 	
-	@JsonIgnoreProperties(value="notelist")
-	@JoinTable ( name = "Label_Notes_join", joinColumns = @JoinColumn (name
-			  ="noteId"), inverseJoinColumns = @JoinColumn(name = "labelid"))
-	private List<Label>labellist = new ArrayList<Label>();
-
+	@JoinTable ( name = "coljoin", joinColumns = @JoinColumn (name
+			  ="noteId"), inverseJoinColumns = @JoinColumn(name = "colabid"))
+	@JsonIgnoreProperties(value="noteslist")
+	private List<Collaborator>collaboration=new ArrayList<Collaborator>();
+	
 	@ManyToMany
-	@JsonIgnoreProperties(value="notelistss")
-	@JoinTable ( name = "usercollab", joinColumns = @JoinColumn (name
-			  ="noteId"), inverseJoinColumns = @JoinColumn(name = "user_id"))
-	private List<UserInformation>userlist = new ArrayList<UserInformation>();
+	@JoinTable ( name = "labelnote", joinColumns = @JoinColumn (name
+			  ="noteId"), inverseJoinColumns = @JoinColumn(name = "labelid"))
+	@JsonIgnoreProperties(value="notelist")
+	private List<Label> labellist = new ArrayList<Label>() ;
+
+//	@ManyToMany()
+//	@JsonIgnoreProperties(value="notelistss")
+//	@JoinTable ( name = "usercollab", joinColumns = @JoinColumn (name
+//			  ="noteId"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+//	private List<UserInformation>userlist = new ArrayList<UserInformation>();
 	public Notes() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -108,32 +115,55 @@ public class Notes
 	public void setIsarchieve(boolean isarchieve) {
 		this.isarchieve = isarchieve;
 	}
-	public String getReminder() {
-		return reminder;
-	}
-	public void setReminder(String reminder) {
-		this.reminder = reminder;
-	}
-	public List<UserInformation> getUserlist() {
-		return userlist;
-	}
-	public void setUserlist(List<UserInformation> userlist) {
-		this.userlist = userlist;
-	}
 	
+//	
+//	public List<UserInformation> getUserlist() {
+//		return userlist;
+//	}
+//	public void setUserlist(List<UserInformation> userlist) {
+//		this.userlist = userlist;
+//	}
+//	
 	
+	public LocalDateTime getAtcreate() {
+		return atcreate;
+	}
+	public void setAtcreate() {
+		this.atcreate = LocalDateTime.now();
+	}
+	public LocalDateTime getAtModified() {
+		return atModified;
+	}
+	public void setAtModified() {
+		this.atModified = LocalDateTime.now();
+	}
 	public List<Collaborator> getCollaboration() {
 		return collaboration;
 	}
 	public void setCollaboration(List<Collaborator> collaboration) {
 		this.collaboration = collaboration;
 	}
+	
+	
+	
+	public boolean isRemindercheck() {
+		return remindercheck;
+	}
+	public void setRemindercheck(boolean remindercheck) {
+		this.remindercheck = remindercheck;
+	}
+	public LocalDateTime getRemindertime() {
+		return remindertime;
+	}
+	public void setRemindertime(LocalDateTime remindertime) {
+		this.remindertime = remindertime;
+	}
 	@Override
 	public String toString() {
 		return "Notes [noteId=" + noteId + ", tittle=" + tittle + ", description=" + description + ", istrash="
-				+ istrash + ", ispin=" + ispin + ", isarchieve=" + isarchieve + ", reminder=" + reminder + ", userid="
-				+ userid + ", collaboration=" + collaboration + ", labellist=" + labellist + ", userlist=" + userlist
-				+ "]";
+				+ istrash + ", ispin=" + ispin + ", isarchieve=" + isarchieve + " userid="
+				+ userid + ", collaboration=" + collaboration + ", labellist=" + labellist + 
+				 "]";
 	}
 	
 	
