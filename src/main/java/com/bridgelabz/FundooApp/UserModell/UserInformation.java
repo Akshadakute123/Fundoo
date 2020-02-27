@@ -1,34 +1,31 @@
 package com.bridgelabz.FundooApp.UserModell;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Entity
-
-public class UserInformation{
+public class UserInformation { 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	// @OneToMany(mappedBy = )
 	private int user_id;
-	private String username;
-	private String email;
-	private String password;
-	private String confirm_password;
-	@OneToMany
-	@JoinColumn(name = "user_id")
-	private List<Notes> notelist = new ArrayList<Notes>();
 
-//	@ManyToMany
-//	@JsonIgnoreProperties(value = "userlist")
-//	@JoinTable(name = "usercollab", joinColumns = @JoinColumn(name = " user_id"), inverseJoinColumns = @JoinColumn(name = "noteId"))
-//	private List<Notes>notelistss  = new ArrayList<Notes>();
+	@Size(min = 2, message = "fistname should contain two value")
+	private String username;
+	@NotEmpty(message = "username shouls not empty")
+	@Email(message = "please enter valid email adress")
+	private String email;
+	@Pattern(regexp = "((?=.*[a-z])(?=.*d)(?=.*[@#$%])(?=.*[A-Z]).{6,16})",message = "password must contains the special symbols,numbers and characters")
+	private String password;
+//	@Pattern(regexp = "((?=.*[a-z])(?=.*d)(?=.*[@#$%])(?=.*[A-Z]).{6,16})",message = "password mismatch")
+
+	private String confirm_password;
 
 	public int getUser_id() {
 		return user_id;
@@ -68,28 +65,6 @@ public class UserInformation{
 
 	public void setConfirm_password(String confirm_password) {
 		this.confirm_password = confirm_password;
-	}
-
-	public List<Notes> getNotelist() {
-		return notelist;
-	}
-
-	public void setNotelist(List<Notes> notelist) {
-		this.notelist = notelist;
-	}
-
-//	public List<Notes> getNotelistss() {
-//		return notelistss;
-//	}
-//
-//	public void setNotelistss(List<Notes> notelistss) {
-//		this.notelistss = notelistss;
-//	}
-
-	@Override
-	public String toString() {
-		return "UserInformation [user_id=" + user_id + ", username=" + username + ", email=" + email + ", password="
-				+ password + ", confirm_password=" + confirm_password + "]";
 	}
 
 }

@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -23,6 +24,7 @@ public class Label {
 	private int labelid;
 	private LocalDateTime createtime;
 	private LocalDateTime modifiedtime;
+	@NotEmpty(message = "label name should not be empty")
 	private String labelname;
 	
 	@ManyToOne
@@ -98,9 +100,5 @@ public class Label {
 		this.notelist = notelist;
 	}
 
-	public String toString() {
-		return "Label [labelid=" + labelid + ", createtime=" + createtime + ", modifiedtime=" + modifiedtime
-				+ ", labelname=" + labelname + ", userinfo=" + userinfo + ", notelist=" + notelist + "]";
-	}
 
 }

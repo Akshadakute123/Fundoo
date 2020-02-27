@@ -44,10 +44,10 @@ public class Collaborator
 	public int getColabid() {
 		return colabid;
 	}
-	@Override
-	public String toString() {
-		return "Collaborator [colabid=" + colabid + ", newemail=" + newemail + ", noteslist=" + noteslist + "]";
-	}
+//	@Override
+//	public String toString() {
+//		return "Collaborator [colabid=" + colabid + ", newemail=" + newemail + ", noteslist=" + noteslist + "]";
+//	}
 	public void setColabid(int colabid) {
 		this.colabid = colabid;
 	}

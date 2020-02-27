@@ -1,6 +1,9 @@
 package com.bridgelabz.FundooApp.UserController;
 
+import java.util.Date;
 import java.util.List;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bridgelabz.FundooApp.Exceptions.NoteException;
+import com.bridgelabz.FundooApp.Exceptions.Response;
+import com.bridgelabz.FundooApp.Exceptions.UserExceptions;
 import com.bridgelabz.FundooApp.UserModell.Collaborator;
 import com.bridgelabz.FundooApp.UserModell.Notes;
 import com.bridgelabz.FundooApp.UserService.NotesService;
@@ -26,10 +32,11 @@ public class NoteController {
 	private TokenService tokenservice;
 
 	@PostMapping("/create")
-	public String createNote(@RequestBody Notes note, @RequestHeader String token) {
+	public Response createNote(@Valid @RequestBody Notes note, @RequestHeader String token) throws NoteException {
 		String decodetoken = tokenservice.getUserIdFromToken(token);
 		System.out.println("decoded token" + decodetoken);
-		return noteservice.createNewNote(note, decodetoken);
+		noteservice.createNewNote(note, decodetoken);
+		return new Response(new Date(), "note created succesfully ", 200, "OK");
 
 	}
 
@@ -39,55 +46,71 @@ public class NoteController {
 	}
 
 	@DeleteMapping("/delete")
-	public String deleteNote(@RequestBody Notes note1, @RequestHeader String token) {
+	public Response deleteNote(@RequestBody Notes note1, @RequestHeader String token) throws NoteException, UserExceptions {
 		String tok = tokenservice.getUserIdFromToken(token);
 		System.out.println("hiiii " + tok);
-		return noteservice.deleteNotess(note1, tok);
+		 noteservice.deleteNotess(note1, tok);
+			return new Response(new Date(), "note deleted succesfully ", 200, "OK");
+
 	}
 
 	@PutMapping("/update")
-	public String updateNote(@RequestBody Notes notes, @RequestHeader String token) {
+	public Response updateNote(@Valid @RequestBody Notes notes, @RequestHeader String token) throws NoteException, UserExceptions {
 		String decode = tokenservice.getUserIdFromToken(token);
 		System.out.println("token is" + decode);
-		return noteservice.updateNotes(notes, decode);
+		noteservice.updateNotes(notes, decode);
+		return new Response(new Date(), "note updated succesfully", 200, "OK");
 
+	
 	}
 
 	@PostMapping("/pin")
-	public String ispin(@RequestHeader int noteId, @RequestHeader String token) {
+	public Response ispin(@RequestHeader int noteId, @RequestHeader String token) throws NoteException, UserExceptions {
 		String tokens = tokenservice.getUserIdFromToken(token);
-		return noteservice.pin(noteId, tokens);
+		noteservice.pin(noteId, tokens);
+		return new Response(new Date(), "note pinned", 200, "OK");
+
 	}
 
 	@PostMapping("/untrash")
-	public String untrash(@RequestHeader int noteId, @RequestHeader String token) {
+	public Response untrash(@RequestHeader int noteId, @RequestHeader String token) throws NoteException, UserExceptions {
 		String tokens = tokenservice.getUserIdFromToken(token);
-		return noteservice.untrash(noteId, tokens);
+		 noteservice.untrash(noteId, tokens);
+			return new Response(new Date(), "Untrashed", 200, "OK");
+
 	}
 
 	@PostMapping("/trash")
-	public String trash(@RequestHeader int noteId, @RequestHeader String token) {
+	public Response trash(@RequestHeader int noteId, @RequestHeader String token) throws NoteException, UserExceptions {
 		String tokens = tokenservice.getUserIdFromToken(token);
-		return noteservice.trash(noteId, tokens);
+		 noteservice.trash(noteId, tokens);
+			return new Response(new Date(), "note trashed", 200, "OK");
+
 	}
 
 	@PostMapping("/archieve")
-	public String archieve(@RequestHeader int noteId, @RequestHeader String token) {
+	public Response archieve(@RequestHeader int noteId, @RequestHeader String token) throws UserExceptions, NoteException {
 		String tokens = tokenservice.getUserIdFromToken(token);
-		return noteservice.archieve(noteId, tokens);
+		 noteservice.archieve(noteId, tokens);
+			return new Response(new Date(), "note archieve", 200, "OK");
+
 	}
 
 	@PostMapping("/unarchieve")
-	public String unarchieve(@RequestHeader int noteId, @RequestHeader String token) {
+	public Response unarchieve(@RequestHeader int noteId, @RequestHeader String token) throws UserExceptions, NoteException {
 		String tokens = tokenservice.getUserIdFromToken(token);
-		return noteservice.unarchieve(noteId, tokens);
+		 noteservice.unarchieve(noteId, tokens);
+			return new Response(new Date(), "note unarchieve", 200, "OK");
+
 	}
 
 	@DeleteMapping("/deletetrash")
-	public String delete(@RequestHeader int noteId, @RequestHeader String token) {
+	public Response delete(@RequestHeader int noteId, @RequestHeader String token) throws UserExceptions, NoteException {
 
 		String tokens = tokenservice.getUserIdFromToken(token);
-		return noteservice.trashdelete(noteId, tokens);
+		 noteservice.trashdelete(noteId, tokens);
+			return new Response(new Date(), "trash deleted succesfully", 200, "OK");
+
 
 	}
 
@@ -118,9 +141,11 @@ public class NoteController {
 	}
 
 	@PostMapping("/collaborate")
-	public String colaborate(@RequestHeader String token, @RequestHeader String emailid, @RequestHeader int noteId) {
+	public Response colaborate(@RequestHeader String token, @RequestHeader String emailid, @RequestHeader int noteId) throws NoteException, UserExceptions {
 		String tokens = tokenservice.getUserIdFromToken(token);
-		return noteservice.collaborate(tokens, emailid, noteId);
+		noteservice.collaborate(tokens, emailid, noteId);
+		return new Response(new Date(), "collaborate succesfully", 200, "OK");
+
 	}
 	@PostMapping("/removecollab")
 	public String removecollaborate(@RequestHeader String token, @RequestHeader String email ,@RequestHeader int noteId) {
@@ -129,24 +154,28 @@ public class NoteController {
 	}
 
 	@GetMapping("/collaboratelist")
-	public List<Collaborator> collablist(@RequestHeader String token) {
+	public List<Collaborator> collablist(@RequestHeader String token ,@RequestHeader int noteId) {
 
 		String tokens = tokenservice.getUserIdFromToken(token);
-		return noteservice.findAllcollab(tokens);
+		return noteservice.findAllcollab(tokens,noteId);
 
 	}
 
 	@PostMapping("/reminder")
-	public String addreminders(@RequestHeader String token, @RequestHeader String times, @RequestHeader int noteId) {
+	public Response addreminders(@RequestHeader String token, @RequestHeader String times, @RequestHeader int noteId) throws UserExceptions, NoteException {
 		System.out.println("helloolloo");
 		String tokens = tokenservice.getUserIdFromToken(token);
-		return noteservice.addreminder(tokens, times, noteId);
+	    noteservice.addreminder(tokens, times, noteId);
+		return new Response(new Date(), "reminder added succesfully", 200, "OK");
+
 	}
 
 	@PutMapping("/removereminder")
-	public String remove(@RequestHeader String token,@RequestHeader int noteId) {
+	public Response remove(@RequestHeader String token,@RequestHeader int noteId) throws UserExceptions, NoteException {
 		String tokens = tokenservice.getUserIdFromToken(token);
-		return noteservice.removereminder(tokens,noteId);
+		noteservice.removereminder(tokens,noteId);
+		return new Response(new Date(), "reminder deleted succesfully", 200, "OK");
+
 	}
 	
 }

@@ -2,7 +2,7 @@ package com.bridgelabz.FundooApp.UserDTO;
 
 public class ForgetPasswordDTO 
 {
-  private String emialid;
+  private String email;
 
 public ForgetPasswordDTO() {
 	super();
@@ -10,16 +10,16 @@ public ForgetPasswordDTO() {
 }
 
 public String getEmialid() {
-	return emialid;
+	return email;
 }
 
 public void setEmialid(String emialid) {
-	this.emialid = emialid;
+	this.email = emialid;
 }
 
 @Override
 public String toString() {
-	return "ForgetPasswordDTO [emialid=" + emialid + "]";
+	return "ForgetPasswordDTO [emialid=" + email + "]";
 }
   
 	

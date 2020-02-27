@@ -1,6 +1,9 @@
 package com.bridgelabz.FundooApp.UserController;
 
+import java.util.Date;
 import java.util.List;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bridgelabz.FundooApp.Exceptions.LabelException;
+import com.bridgelabz.FundooApp.Exceptions.NoteException;
+import com.bridgelabz.FundooApp.Exceptions.Response;
+import com.bridgelabz.FundooApp.Exceptions.UserExceptions;
 import com.bridgelabz.FundooApp.UserModell.Label;
 import com.bridgelabz.FundooApp.UserService.LabelService;
 import com.bridgelabz.FundooApp.Utility.TokenService;
@@ -28,24 +35,30 @@ public class LabelController
 	private LabelService labelservice;
 	
 	@PostMapping("/create")
-	public String CreateLabel(@RequestBody Label label,@RequestHeader String token)
+	public Response CreateLabel(@Valid @RequestBody Label label,@RequestHeader String token) throws LabelException, UserExceptions
 	{
 		String tokens=tokenservice.getUserIdFromToken(token);
 		System.out.println("token is"+tokens);
-		return labelservice.createlabels(label,tokens);
+		labelservice.createlabels(label,tokens);
+		return new Response(new Date(), "label created succesfully ", 200, "OK");
 		
 		
 	}
 	@DeleteMapping("/delete")
-	public String delete(@RequestBody Label label, @RequestHeader String token) {
+	public Response delete(@RequestBody Label label, @RequestHeader String token) throws LabelException, UserExceptions {
 		String decodeToken =tokenservice.getUserIdFromToken(token);
-		return labelservice.deleteLabel(label, decodeToken);
+		labelservice.deleteLabel(label, decodeToken);
+		return new Response(new Date(), "label deleted succesfully ", 200, "OK");
+
 
 	}
 	@PutMapping("/update")
-	public String update(@RequestBody Label label, @RequestHeader String token) {
+	public Response update(@Valid @RequestBody Label label, @RequestHeader String token) throws UserExceptions, LabelException {
 		String decodeToken = tokenservice.getUserIdFromToken(token);
-		return labelservice.updateLabel(label, decodeToken);
+		 
+		labelservice.updateLabel(label, decodeToken);
+		return new Response(new Date(), "label updated succesfully ", 200, "OK");
+
 	}
 	@GetMapping("/getinfo")
 	public List<Label> labelinfo()
@@ -59,18 +72,22 @@ public class LabelController
 		
 	}
 	@PostMapping("/addLabelToNote")
-	public String add(@RequestHeader String token,@RequestParam int  noteId,@RequestHeader int  labelid) {
+	public Response add(@RequestHeader String token,@RequestParam int  noteId,@RequestHeader int  labelid) throws LabelException, NoteException, UserExceptions {
 		System.out.println("heloooo");
 		String tokens = tokenservice.getUserIdFromToken(token);
 		System.out.println("token is "+tokens);
-		return labelservice.addLabelToNote(tokens, noteId, labelid);
+	labelservice.addLabelToNote(tokens, noteId, labelid);
+	return new Response(new Date(), "label added to note succesfully ", 200, "OK");
+
 		
 	}
 	@PostMapping("/addNoteToLabel")
-	public String addNote(@RequestHeader String token,@RequestParam int  noteId,@RequestHeader int  labelid) {
+	public Response addNote(@RequestHeader String token,@RequestParam int  noteId,@RequestHeader int  labelid) throws LabelException, NoteException, UserExceptions {
 		
 		String tokennew = tokenservice.getUserIdFromToken(token);
-		return labelservice.addNoteToLabel(tokennew, noteId, labelid);
+		 labelservice.addNoteToLabel(tokennew, noteId, labelid);
+			return new Response(new Date(), "labeladded label to note succesfully ", 200, "OK");
+
 		
 	}
 	

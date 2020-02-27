@@ -1,8 +1,16 @@
 package com.bridgelabz.FundooApp.UserDTO;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+
 public class LoginDTO 
 {
+	@NotEmpty(message = "username shouls not empty")
+	@Email(message = "please enter valid email adress")
 	String email;
+	@Pattern(regexp = "((?=.*[a-z])(?=.*d)(?=.*[@#$%])(?=.*[A-Z]).{6,16})",message = "password is wrong")
+
 	String password;
 	public String getemail() {
 		return email;

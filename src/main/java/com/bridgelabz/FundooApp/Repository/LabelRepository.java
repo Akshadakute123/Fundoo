@@ -11,5 +11,5 @@ import com.bridgelabz.FundooApp.UserModell.Label;
 @Repository
 public interface LabelRepository extends JpaRepository<Label, Integer> {
 	 Optional<Label>findByLabelid(int labelid);
-
+Optional<Label>findByLabelname(String labelname);
 }

@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -22,8 +23,9 @@ public class Notes
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int noteId;
-
+     @NotEmpty(message = "tittle should not be empty")
 	private String tittle;
+     @NotEmpty(message = "description should not be empty")
 	private String description;
 	@NotNull
 	private boolean istrash;
@@ -158,15 +160,15 @@ public class Notes
 	public void setRemindertime(LocalDateTime remindertime) {
 		this.remindertime = remindertime;
 	}
-	@Override
-	public String toString() {
-		return "Notes [noteId=" + noteId + ", tittle=" + tittle + ", description=" + description + ", istrash="
-				+ istrash + ", ispin=" + ispin + ", isarchieve=" + isarchieve + " userid="
-				+ userid + ", collaboration=" + collaboration + ", labellist=" + labellist + 
-				 "]";
-	}
-	
-	
+//	@Override
+//	public String toString() {
+//		return "Notes [noteId=" + noteId + ", tittle=" + tittle + ", description=" + description + ", istrash="
+//				+ istrash + ", ispin=" + ispin + ", isarchieve=" + isarchieve + " userid="
+//				+ userid + ", collaboration=" + collaboration  
+//				 +"]";
+//	}
+//	
+//	
 	
 	
 
