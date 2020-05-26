@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bridgelabz.FundooApp.Exceptions.NoteException;
+import com.bridgelabz.FundooApp.Exceptions.Response;
 import com.bridgelabz.FundooApp.Exceptions.UserExceptions;
 import com.bridgelabz.FundooApp.Repository.Collaboratorrepository;
 import com.bridgelabz.FundooApp.Repository.NoteRepository;
@@ -61,12 +62,16 @@ public class NotesService {
 	}
 
 	public List<Notes> findAll(String newToken) {
-		List<Notes> notlist = new ArrayList<Notes>();
-		System.out.println(notlist);
+		List<Notes> allNotes = new ArrayList<Notes>();
 		Optional<UserInformation> user = userrepository.findByEmail(newToken);
-		if (user.isPresent())
-			notlist = noterepository.findAll();
-		return notlist.stream().filter(i -> i.getUserid().equals(user.get())).collect(Collectors.toList());
+		List<Notes> noteList = noterepository.findAll();
+		allNotes = noteList.stream().filter(i -> i.getUserid().equals(user.get())).collect(Collectors.toList());
+		// List<Notes> checkPinUnpin = allNotes.stream().filter(i->i.isPin() == false).collect(Collectors.toList());
+		List<Notes> checkTrash = allNotes.stream().filter(i -> i.isIstrash() == false).collect(Collectors.toList());
+		List<Notes> checkArchived = checkTrash.stream().filter(i -> i.isIsarchieve() == false)
+		.collect(Collectors.toList());
+		return checkArchived;
+
 
 	}
 
@@ -138,8 +143,8 @@ public class NotesService {
 
 	}
 
-	public String trash(int noteId, String tokens) throws NoteException, UserExceptions {
-		Optional<Notes> notes = noterepository.findByNoteId(noteId);
+	public String trash(Notes noteId, String tokens) throws NoteException, UserExceptions {
+		Optional<Notes> notes = noterepository.findByNoteId(noteId.getNoteId());
 		System.out.println(noteId);
 		Optional<UserInformation> user = userrepository.findByEmail(tokens);
 		System.out.println(tokens);
@@ -186,8 +191,8 @@ public class NotesService {
 		return "untrashed";
 	}
 
-	public String archieve(int noteId, String tokens) throws UserExceptions, NoteException {
-		Optional<Notes> notes = noterepository.findByNoteId(noteId);
+	public String archieve(Notes noteId, String tokens) throws UserExceptions, NoteException {
+		Optional<Notes> notes = noterepository.findByNoteId(noteId.getNoteId());
 		System.out.println(noteId);
 		Optional<UserInformation> user = userrepository.findByEmail(tokens);
 		System.out.println(tokens);
@@ -262,11 +267,16 @@ public class NotesService {
 		// System.out.println(token);
 
 		Optional<UserInformation> user = userrepository.findByEmail(token);
-		;
 		List<Notes> noteslist = noterepository.findByUserid(user.get());
 		List<Notes> notelists = noteslist.stream().filter(i -> i.isIstrash()).collect(Collectors.toList());
 		return notelists;
 	}
+	public List<Notes> getarchievelist(String tokens) {
+		Optional<UserInformation> user = userrepository.findByEmail(tokens);
+		List<Notes> noteslist = noterepository.findByUserid(user.get());
+		List<Notes> notelists = noteslist.stream().filter(i -> i.isIsarchieve()).collect(Collectors.toList());
+		return notelists;
+		}
 
 	public List<Notes> searchBytitileDesc(String title, String token) {
 		Optional<UserInformation> user1 = userrepository.findByEmail(token);
@@ -321,9 +331,9 @@ public class NotesService {
 		System.out.println(remindertime);
 		Optional<UserInformation> decodetoken = userrepository.findByEmail(tokens);
 		Optional<Notes> noteid = noterepository.findById(noteId);
-
-		DateTimeFormatter datetimeformater = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		LocalDateTime reminderTime = LocalDateTime.parse(remindertime, datetimeformater);
+ 
+//		DateTimeFormatter datetimeformater = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//		LocalDateTime reminderTime = LocalDateTime.parse(remindertime, datetimeformater);
 		if (!decodetoken.isPresent()) {
 			throw new UserExceptions("user not present");
 		}
@@ -332,7 +342,8 @@ public class NotesService {
 		} else {
 			System.out.println("in ifff");
 			noteid.get().setRemindercheck(true);
-			noteid.get().setRemindertime(reminderTime);
+			noteid.get().setRemindertime(remindertime);
+			System.out.println("hikiihhxhhhhhhhhhhhhhhhhhhhhhhhhnbnhh");
 			noterepository.save(noteid.get());
 			return "reminder added succesfully";
 		}
@@ -384,5 +395,72 @@ public class NotesService {
 
 		return "collaborator removed";
 	}
+	private boolean checkUserExit(String token) {
+		System.out.println(token);
+
+		Optional<UserInformation> user =userrepository.findByEmail(token);
+		if (user.isPresent()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public String getSingleNote(int id, String token) {
+		Optional<UserInformation> registrationModel = userrepository.findByEmail(token);
+		
+		if (checkUserExit(token)) {
+			Optional<Notes> singleNote = noterepository.findByNoteId(id);
+			if (singleNote.isPresent()) {
+				System.out.println("sigle note " + singleNote.get());
+				return "saveNote";
+			}
+			return "note not present";
+		}
+		return "envalid token";
+	}
+
+	public List<Notes> getreminderlist(String tokens) {
+		Optional<UserInformation> user = userrepository.findByEmail(tokens);
+		List<Notes> noteslist = noterepository.findByUserid(user.get());
+		List<Notes> notelists = noteslist.stream().filter(i -> i.isRemindercheck()).collect(Collectors.toList());
+		return notelists;
+		}
+
+	public List<Collaborator> getAllCollaborator(String decodeString, int noteId) {
+		// TODO Auto-generated method stub
+		Optional<Notes> list = noterepository.findByNoteId(noteId);
+		List<Collaborator> collablist = list.get().getCollaboration();
+		return collablist;
+		
+	}
+
+	public List<Notes> getListOfNoteBySearchField(String decodeString, String typeText) {
+		Optional<UserInformation> user = userrepository.findByEmail(decodeString);
+		if (user.isPresent()) {
+			List<Notes> allNoteList = noterepository.findAll();
+			List<Notes> loginUserCreateNoteList = allNoteList.stream().filter(t -> (t.getUserid().getUser_id()) == user.get().getUser_id())
+					.collect(Collectors.toList());
+			List<Notes> searchNoteList = loginUserCreateNoteList.parallelStream()
+					.filter(i -> (!i.isIstrash()) && (i.getTittle().indexOf(typeText) >= 0)).collect(Collectors.toList());
+			return (searchNoteList);
+		}
+	
+		return null;
+	}
+
+	public String Backgroundcolor(Notes noteModel, String decodeString) {
+		Optional<UserInformation> registrationModel = userrepository.findByEmail(decodeString);
+		long noteId =noteModel.getNoteId();
+		if (registrationModel.isPresent()) {
+			Optional<Notes> note = noterepository.findById((int) noteId);
+			note.get().setBackgroundColor(noteModel.getBackgroundColor());
+			noterepository.save(note.get());
+			return  "colorChangeSuccessFully";
+		}
+		return "not valid token";
+	}
+
+	
 
 }

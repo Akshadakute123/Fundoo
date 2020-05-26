@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,13 +91,7 @@ public class LabelService {
 		return "updated succesfully";
 	}
 
-	public List<Label> findAll(String newToken) {
-		List<Label> labels = new ArrayList<Label>();
-		Optional<UserInformation> user = repository.findByEmail(newToken);
-		if (user.isPresent())
-			labels = labelrepository.findAll();
-		return labels.stream().filter(i -> i.getUserinfo().equals(user.get())).collect(Collectors.toList());
-	}
+	
 
 	public String addLabelToNote(String tokens, int noteId, int labelid)
 			throws LabelException, NoteException, UserExceptions {
@@ -162,5 +157,99 @@ public class LabelService {
 		return labellist;
 
 	}
+	public List<Label> findAll(String newToken) {
+		List<Label> labels = new ArrayList<Label>();
+		Optional<UserInformation> user = repository.findByEmail(newToken);
+		if (user.isPresent())
+			labels = labelrepository.findAll();
+		return labels.stream().filter(i -> i.getUserinfo().equals(user.get())).collect(Collectors.toList());
+	}
 
-}
+	public List<Label> displayaddedlabels(String token, int noteId) {
+		Optional<UserInformation> user = repository.findByEmail(token);
+		System.out.println("token of user"+token);
+		System.out.println(noteId);
+		if (user.isPresent()) {
+			System.out.println("inside user");
+			List<Label> labelModelAll = labelrepository.findAll();
+			System.out.println("==================="+labelModelAll);
+			List<Label> labelModelUserCreate = labelModelAll.stream().filter(i-> i.getUserinfo().getUser_id()==user.get().getUser_id()).collect(Collectors.toList());
+			System.out.println("==================="+labelModelUserCreate);
+
+			List<Label>sortlabel=new ArrayList<Label>();
+		    for(int j=0;j<labelModelUserCreate.size();j++)
+		    { System.out.println("inside j");
+		    	for(int k=0;k<labelModelUserCreate.get(j).getNotelist().size();k++)
+		    	{
+		    		System.out.println("inside k");
+		    		if((labelModelUserCreate.get(j).getNotelist().get(k).getNoteId())==noteId)
+		    		{
+		    			sortlabel.add(labelModelUserCreate.get(j));
+		    			System.out.println("label"+labelModelUserCreate.get(j));
+		    		}
+		    	}
+		    }
+		    System.out.println("sortlabel"+sortlabel);
+		return (sortlabel);
+
+		}
+
+		return null;
+	}
+
+	public List<Label> displayunaddedlabels(String token, int noteId)
+	{	
+			Optional<UserInformation> registrationModel = repository.findByEmail(token);
+			Optional<Notes>notesinfo=noterepository.findByNoteId(noteId);
+			if (registrationModel.isPresent())
+			{
+				List<Label> labelModelAll = labelrepository.findAll();
+				List<Label> labelModelUserCreate = labelModelAll.stream()
+						.filter(i -> (i.getUserinfo().getUser_id() == registrationModel.get().getUser_id())).collect(Collectors.toList());
+				List<Label> sortLabel = new ArrayList<Label>();
+				sortLabel.addAll(labelModelUserCreate);
+				for (int j = 0; j < labelModelUserCreate.size(); j++)
+				{
+					for (int j2 = 0; j2 < labelModelUserCreate.get(j).getNotelist().size(); j2++) 
+					{
+						if((labelModelUserCreate.get(j).getNotelist().get(j2).getNoteId()) == noteId) 
+						{
+//							sortLabel.add(labelModelUserCreate.get(j));
+							sortLabel.remove(labelModelUserCreate.get(j));
+							System.out.println("label"+labelModelUserCreate.get(j));
+							
+						}
+					}
+//					sortLabel.add(labelModelUserCreate.get(j));
+				}
+				return( sortLabel);
+			}
+			return null;
+			
+		}
+
+	
+		
+
+	public String removelabelfromnote(String tokennew, int noteId, int labelid) {
+		// TODO Auto-generated method stub
+		Optional<UserInformation> registrationModel = repository.findByEmail(tokennew);
+		if (registrationModel.isPresent()) {
+			Optional<Notes> noteModel = noterepository.findByNoteId(noteId);
+			Optional<Label> labelModel = labelrepository.findByLabelid(labelid);
+			if (noteModel.isPresent() && labelModel.isPresent()) {
+				noteModel.get().getLabellist().remove(labelModel.get());
+				noterepository.save(noteModel.get());
+			
+			}
+		
+		}
+		return "note remove";
+	
+	}
+		
+	}
+	
+	
+
+

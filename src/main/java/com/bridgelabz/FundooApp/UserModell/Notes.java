@@ -35,10 +35,10 @@ public class Notes
 	private boolean isarchieve;
 //	private String reminder;
 	private boolean remindercheck;
-	private LocalDateTime remindertime;
+	private String remindertime;
 	private LocalDateTime atcreate;
 	private LocalDateTime atModified;
-	
+	private String backgroundColor;
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private UserInformation userid;
@@ -77,6 +77,13 @@ public class Notes
 	}
 	public void setTittle(String tittle) {
 		this.tittle = tittle;
+	}
+	
+	public String getBackgroundColor() {
+		return backgroundColor;
+	}
+	public void setBackgroundColor(String backgroundColor) {
+		this.backgroundColor = backgroundColor;
 	}
 	public String getDescription() {
 		return description;
@@ -154,12 +161,13 @@ public class Notes
 	public void setRemindercheck(boolean remindercheck) {
 		this.remindercheck = remindercheck;
 	}
-	public LocalDateTime getRemindertime() {
+	public String getRemindertime() {
 		return remindertime;
 	}
-	public void setRemindertime(LocalDateTime remindertime) {
+	public void setRemindertime(String remindertime) {
 		this.remindertime = remindertime;
 	}
+
 //	@Override
 //	public String toString() {
 //		return "Notes [noteId=" + noteId + ", tittle=" + tittle + ", description=" + description + ", istrash="

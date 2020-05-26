@@ -1,13 +1,23 @@
 package com.bridgelabz.FundooApp.UserService;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import com.bridgelabz.FundooApp.Exceptions.Response;
 import com.bridgelabz.FundooApp.Exceptions.UserExceptions;
 import com.bridgelabz.FundooApp.Repository.UserRepository;
 import com.bridgelabz.FundooApp.UserDTO.ForgetPasswordDTO;
@@ -16,6 +26,9 @@ import com.bridgelabz.FundooApp.UserDTO.ResetPasswordDto;
 import com.bridgelabz.FundooApp.UserModell.UserInformation;
 import com.bridgelabz.FundooApp.Utility.JMS;
 import com.bridgelabz.FundooApp.Utility.TokenService;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+
 
 @Service
 public class UserService {
@@ -113,4 +126,33 @@ public class UserService {
 		}
 		return "password updated";
 	}
+
+	public Response uploadProPic(String token, MultipartFile file) throws IOException {
+		String emailid = tokenservice.getUserIdFromToken(token);
+		Optional<UserInformation> user = userRepository.findByEmail(emailid);
+		if (user.isPresent()) {
+		System.out.println("hey");
+		File uploadFile = new File(file.getOriginalFilename());
+//		System.out.println(uploadFile);
+		BufferedOutputStream outStream = new BufferedOutputStream(new FileOutputStream(uploadFile));
+		outStream.write(file.getBytes());
+		outStream.close();
+		Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap("cloud_name", "patilvarad2011", "api_key",
+		"814469859839278", "api_secret", "xyd8OV451Efmc9DvwFKL0xxNfi4"));
+		System.out.println(ObjectUtils.emptyMap());
+		Map<?, ?> uploadProfile;
+		//uploadProfile = cloudinary.uploader().upload(uploadFile, ObjectUtils.emptyMap());
+		uploadProfile = cloudinary.uploader().upload(uploadFile, ObjectUtils.emptyMap());
+
+
+		//user.get().setImage(uploadProfile.get("secure_url").toString());
+		user.get().setImage(uploadProfile.get("secure_url").toString());
+		userRepository.save(user.get());
+		// return "profile picture set successfully " +uploadProfile.get("secure_url").toString();
+		return new Response( new Date(),"Profile picture set successfully", 200, uploadProfile.get("secure_url").toString());                                                                                                                                                                                                                                                                                                                                                                
+		}
+		return null;
+
+		}
+
 }

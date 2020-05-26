@@ -88,6 +88,15 @@ public class Label {
 		return userinfo;
 	}
 
+	@Override
+	public String toString() {
+		return "Label [labelid=" + labelid + ", createtime=" + createtime + ", modifiedtime=" + modifiedtime
+				+ ", labelname=" + labelname + ", userinfo=" + userinfo + ", notelist=" + notelist + ", getLabelid()="
+				+ getLabelid() + ", getCreatetime()=" + getCreatetime() + ", getModifiedtime()=" + getModifiedtime()
+				+ ", getLabelname()=" + getLabelname() + ", getUserinfo()=" + getUserinfo() + ", getNotelist()="
+				+ getNotelist() + "]";
+	}
+
 	public void setUserinfo(UserInformation userinfo) {
 		this.userinfo = userinfo;
 	}

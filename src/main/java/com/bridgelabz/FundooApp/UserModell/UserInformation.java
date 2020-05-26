@@ -26,6 +26,14 @@ public class UserInformation {
 //	@Pattern(regexp = "((?=.*[a-z])(?=.*d)(?=.*[@#$%])(?=.*[A-Z]).{6,16})",message = "password mismatch")
 
 	private String confirm_password;
+    private String image;
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
 
 	public int getUser_id() {
 		return user_id;
